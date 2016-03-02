@@ -29,7 +29,7 @@ namespace CashierPrinter.Service
       {
         throw new Exception("Order quantity must be greater than zero.");
       }
-      if (productPrice < 0)
+      if (productPrice <= 0)
       {
         throw new Exception("Product price must be no less than zero.");
       }

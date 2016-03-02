@@ -108,12 +108,12 @@ namespace CashierPrinter.App
       {
         // lookup the preferential options
         ICashierPrinter cashierPrinter = StrategyFactory.GetCashierPrinter(item, null);
-        CashierPrinterStrategy stategy = new CashierPrinterStrategy(cashierPrinter);
+        CashierPrinterStrategy strategy = new CashierPrinterStrategy(cashierPrinter);
         List<Preferential> preferentials = PreferentialStrategy.GetProductPreferentials(item, buyForFreeRepository);
         foreach (var preferential in preferentials)
         {
           cashierPrinter = StrategyFactory.GetCashierPrinter(item, preferential);
-          stategy = new CashierPrinterStrategy(cashierPrinter);
+          strategy = new CashierPrinterStrategy(cashierPrinter);
           if (preferential.IsPrinted)
           {
             if (!specialPreferentials.ContainsKey(preferential.PreferentialCode))
@@ -123,10 +123,10 @@ namespace CashierPrinter.App
             specialPreferentials[preferential.PreferentialCode].Add(string.Format("名称：{0}，数量：{1}{2}", item.ProductName, item.OrderQty, item.Unit));
           }
         }
-        totalPayAmount += stategy.CalculatAmount();
+        totalPayAmount += strategy.CalculatAmount();
         totalRawAmount += item.ProductPrice * item.OrderQty;
         //stategy.SetProductStrategy();
-        sb.AppendLine(stategy.Print());
+        sb.AppendLine(strategy.Print());
         
       }
       sb.AppendLine("----------------------");

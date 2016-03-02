@@ -43,7 +43,6 @@
     <Compile Include="BuyForFree.cs" />
     <Compile Include="Discount.cs" />
     <Compile Include="ICashierPrinter.cs" />
-    <Compile Include="IPrint.cs" />
     <Compile Include="NoPreferential.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

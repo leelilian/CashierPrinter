@@ -25,7 +25,7 @@ namespace CashierPrinter.Service
       }
       if (freeCount <= 0)
       {
-        throw new Exception("Free count must be greater zero.");
+        throw new Exception("Free count must be greater than zero.");
       }
       _BuyCount = buyCount;
       _FreeCount = freeCount;
