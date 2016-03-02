@@ -48,7 +48,7 @@ namespace CashierPrinter.Service
 
     public virtual string Print()
     {
-      return string.Format("名称：{0}， 数量：{1}（{2}），单价：{3}（元）， 小计：{4}（元）", _ProductName,
+      return string.Format("名称：{0}， 数量：{1}{2}，单价：{3}（元）， 小计：{4}（元）", _ProductName,
           _OrderQuantiy, _Unit, _ProductPrice, CalculateAmout());
     }
   }
