@@ -21,7 +21,6 @@ namespace CashierPrinter.Service
       {
         throw new Exception("Discount must be between 0 and 1");
       }
-      _ProductPrice = productPrice ;
       _Discount = discount;
     }
     public override decimal CalculateAmout()
