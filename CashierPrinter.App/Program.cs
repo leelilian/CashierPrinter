@@ -11,8 +11,6 @@ namespace CashierPrinter.App
 {
   class Program
   {
-
-    private static Dictionary<string, List<string>> specialPreferentials = new Dictionary<string, List<string>>();
     static void Main(string[] args)
     {
 
@@ -34,13 +32,20 @@ namespace CashierPrinter.App
       new Preferential() {  PreferentialCode="Discount", PreferentialDesc="打折", ProductCode = "ITEM000003", Ref1 = "0.95", Ref1Desc ="95折"} };
 
       List<Preferential> buyForFreeRepository = new List<Preferential>() {
-      new Preferential() {  PreferentialCode="BuyForFree", PreferentialDesc="买二赠一", ProductCode = "ITEM000001", Ref1 = "2", Ref1Desc ="买2个", Ref2 = "1", Ref2Desc = "赠送1个",IsPrinted = true},
-      new Preferential() {  PreferentialCode="BuyForFree", PreferentialDesc="买二赠一", ProductCode = "ITEM000002", Ref1 = "2", Ref1Desc ="买2个", Ref2 = "1", Ref2Desc = "赠送1个", IsPrinted = true}};
+      new Preferential() {  PreferentialCode="BuyForFree", PreferentialDesc="买二赠一商品", ProductCode = "ITEM000001", Ref1 = "2", Ref1Desc ="买2个", Ref2 = "1", Ref2Desc = "赠送1个",IsPrinted = true},
+      new Preferential() {  PreferentialCode="BuyForFree", PreferentialDesc="买二赠一商品", ProductCode = "ITEM000002", Ref1 = "2", Ref1Desc ="买2个", Ref2 = "1", Ref2Desc = "赠送1个", IsPrinted = true}};
 
       List<Preferential> preferentialRepository = new List<Preferential>() {
-      new Preferential() {  PreferentialCode="BuyForFree", PreferentialDesc="买二赠一", ProductCode = "ITEM000001", Ref1 = "2", Ref1Desc ="买2个", Ref2 = "1", Ref2Desc = "赠送1个"},
-      new Preferential() {  PreferentialCode="BuyForFree", PreferentialDesc="买二赠一", ProductCode = "ITEM000002", Ref1 = "2", Ref1Desc ="买2个", Ref2 = "1", Ref2Desc = "赠送1个"}};
+      new Preferential() {  PreferentialCode="BuyForFree", PreferentialDesc="买二赠一商品", ProductCode = "ITEM000001", Ref1 = "2", Ref1Desc ="买2个", Ref2 = "1", Ref2Desc = "赠送1个", IsPrinted = true, IsExclusive = true},
+      new Preferential() {  PreferentialCode="Discount", PreferentialDesc="打折", ProductCode = "ITEM000001", Ref1 = "0.95", Ref1Desc ="95折"}};
 
+      List<List<Preferential>> testPreferentials = new List<List<Preferential>>()
+      {
+        noPreferentialRepository,
+        discountRepository,
+        buyForFreeRepository,
+        preferentialRepository
+      };
 
       // the input message
       string rawInput = @"[ 'ITEM000001',
@@ -97,60 +102,64 @@ namespace CashierPrinter.App
         }
       }
 
-
-      // apply to different preferential 
-      StringBuilder sb = new StringBuilder();
-      sb.AppendLine(string.Format("***<没钱赚商店>购物清单***"));
-      // no preferential
-      decimal totalPayAmount = 0;
-      decimal totalRawAmount = 0;
-      foreach (var item in purchasedProductList)
+      foreach (var pref in testPreferentials)
       {
-        // lookup the preferential options
-        ICashierPrinter cashierPrinter = StrategyFactory.GetCashierPrinter(item, null);
-        CashierPrinterStrategy strategy = new CashierPrinterStrategy(cashierPrinter);
-        List<Preferential> preferentials = PreferentialStrategy.GetProductPreferentials(item, buyForFreeRepository);
-        foreach (var preferential in preferentials)
+        Dictionary<string, List<string>> specialPreferentials = new Dictionary<string, List<string>>();
+        // apply to different preferential 
+        StringBuilder sb = new StringBuilder();
+        sb.AppendLine(string.Format("***<没钱赚商店>购物清单***"));
+        // no preferential
+        decimal totalPayAmount = 0;
+        decimal totalRawAmount = 0;
+        foreach (var item in purchasedProductList)
         {
-          cashierPrinter = StrategyFactory.GetCashierPrinter(item, preferential);
-          strategy = new CashierPrinterStrategy(cashierPrinter);
-          if (preferential.IsPrinted)
+          // lookup the preferential options
+          ICashierPrinter cashierPrinter = StrategyFactory.GetCashierPrinter(item, null);
+          CashierPrinterStrategy strategy = new CashierPrinterStrategy(cashierPrinter);
+          List<Preferential> preferentials = PreferentialStrategy.GetProductPreferentials(item, pref);
+         
+          foreach (var preferential in preferentials)
           {
-            if (!specialPreferentials.ContainsKey(preferential.PreferentialCode))
+            cashierPrinter = StrategyFactory.GetCashierPrinter(item, preferential);
+            strategy = new CashierPrinterStrategy(cashierPrinter);
+            if (preferential.IsPrinted)
             {
-              specialPreferentials.Add(preferential.PreferentialCode, new List<string>() { preferential.PreferentialDesc });
+              if (!specialPreferentials.ContainsKey(preferential.PreferentialCode))
+              {
+                specialPreferentials.Add(preferential.PreferentialCode, new List<string>() { preferential.PreferentialDesc });
+              }
+              specialPreferentials[preferential.PreferentialCode].Add(string.Format("名称：{0}，数量：{1}{2}", item.ProductName, item.OrderQty, item.Unit));
             }
-            specialPreferentials[preferential.PreferentialCode].Add(string.Format("名称：{0}，数量：{1}{2}", item.ProductName, item.OrderQty, item.Unit));
           }
-        }
-        totalPayAmount += strategy.CalculatAmount();
-        totalRawAmount += item.ProductPrice * item.OrderQty;
-        //stategy.SetProductStrategy();
-        sb.AppendLine(strategy.Print());
-        
-      }
-      sb.AppendLine("----------------------");
+          totalPayAmount += strategy.CalculatAmount();
+          totalRawAmount += item.ProductPrice * item.OrderQty;
+          sb.AppendLine(strategy.Print());
 
-      if (specialPreferentials.Count != 0)
-      {
-        foreach (KeyValuePair<string,List<string>> item in specialPreferentials)
-        {
-          foreach (var specialProduct in item.Value)
-          {
-            sb.AppendLine(specialProduct);
-          }
-          
         }
         sb.AppendLine("----------------------");
+
+        if (specialPreferentials.Count != 0)
+        {
+          foreach (KeyValuePair<string, List<string>> item in specialPreferentials)
+          {
+            foreach (var specialProduct in item.Value)
+            {
+              sb.AppendLine(specialProduct);
+            }
+          }
+          sb.AppendLine("----------------------");
+        }
+
+        sb.AppendLine(string.Format("总计：{0}（元）", totalPayAmount));
+        if (totalRawAmount != totalPayAmount)
+        {
+          sb.AppendLine(string.Format("节省：{0}（元）", totalRawAmount - totalPayAmount));
+        }
+        sb.AppendLine("**********************");
+        Console.WriteLine(sb.ToString());
+        Console.WriteLine();
       }
 
-      sb.AppendLine(string.Format("总计：{0}（元）", totalPayAmount));
-      if (totalRawAmount != totalPayAmount)
-      {
-        sb.AppendLine(string.Format("节省：{0}（元）", totalRawAmount - totalPayAmount));
-      }
-      sb.AppendLine("**********************");
-      Console.WriteLine(sb.ToString());
       Console.ReadLine();
 
     }
