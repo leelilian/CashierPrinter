@@ -3,11 +3,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{9003108B-DAA4-4395-A45D-23BF7F094323}</ProjectGuid>
+    <ProjectGuid>{82D6ADF3-8A8B-4704-80F3-F5F4F131AEB4}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>CashierPrinter.Service.Test</RootNamespace>
-    <AssemblyName>CashierPrinter.Service.Test</AssemblyName>
+    <RootNamespace>CashierPrinter.Strategy.Test</RootNamespace>
+    <AssemblyName>CashierPrinter.Strategy.Test</AssemblyName>
     <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{3AC096D0-A1C2-E12C-1390-A8335801FDAB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
@@ -45,22 +45,22 @@
     </When>
     <Otherwise>
       <ItemGroup>
-        <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTestFramework">
-          <Private>False</Private>
-        </Reference>
+        <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTestFramework" />
       </ItemGroup>
     </Otherwise>
   </Choose>
   <ItemGroup>
-    <Compile Include="BuyForFreeTest.cs" />
-    <Compile Include="DiscountTest.cs" />
-    <Compile Include="NoPreferentialTest.cs" />
+    <Compile Include="PreferentialStrategyTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\CashierPrinter.Service\CashierPrinter.Service.csproj">
-      <Project>{7ea7c098-8f5c-47dc-9f92-b82ae8d42f9f}</Project>
-      <Name>CashierPrinter.Service</Name>
+    <ProjectReference Include="..\CashierPrinter.Model\CashierPrinter.Model.csproj">
+      <Project>{bfdb1790-6e11-4113-8dee-82aaf6001f9d}</Project>
+      <Name>CashierPrinter.Model</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\CashierPrinter.Strategy\CashierPrinter.Strategy.csproj">
+      <Project>{ce310e2f-d875-4d55-9452-ec5290bf6076}</Project>
+      <Name>CashierPrinter.Strategy</Name>
     </ProjectReference>
   </ItemGroup>
   <Choose>
