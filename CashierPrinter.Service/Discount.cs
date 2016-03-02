@@ -31,7 +31,7 @@ namespace CashierPrinter.Service
     public override string Print()
     {
       decimal savedMoney = Math.Round((_OrderQuantiy * _ProductPrice - CalculateAmout()), 2);
-      return string.Format("名称：{0}， 数量：{1}（{2}），单价：{3}（元）， 小计：{4}（元）， 节省：{5}（元）", _ProductName,
+      return string.Format("名称：{0}， 数量：{1}{2}，单价：{3}（元）， 小计：{4}（元）， 节省：{5}（元）", _ProductName,
           _OrderQuantiy, _Unit, _ProductPrice, CalculateAmout(), savedMoney);
     }
   }
